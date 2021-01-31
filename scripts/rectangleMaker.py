@@ -105,57 +105,57 @@ class rectangleMaker():
             line_color.g = ((i+1)%3)/2
             line_color.b = ((i+2)%3)/2
             line_color.a = 1.0
-
-
-            myMarker.type = Marker.LINE_STRIP
-            myMarker.scale.x = 0.02
-            myMarker.points.append(self.lowest_point[i])
-            myMarker.points.append(self.closest_point[i])
-            myMarker.colors.append(line_color)
-            myMarker.colors.append(line_color)
-  
-
-            marker_array.markers.append(myMarker)
-            
+            if len(cluster.points) > 5:
+                if  (self.lowest_point[i].x != self.closest_point[i].x and self.lowest_point[i].y != self.closest_point[i].y):
+                    myMarker.type = Marker.LINE_STRIP
+                    myMarker.scale.x = 0.02
+                    myMarker.points.append(self.lowest_point[i])
+                    myMarker.points.append(self.closest_point[i])
+                    myMarker.colors.append(line_color)
+                    myMarker.colors.append(line_color)
         
 
+                    marker_array.markers.append(myMarker)
+                
+            
 
-            myMarker.type = Marker.LINE_STRIP
-            myMarker.scale.x = 0.02
-            myMarker.points.append(self.highest_point[i])
-            myMarker.points.append(self.closest_point[i])
-            myMarker.colors.append(line_color)
-            myMarker.colors.append(line_color)
-            marker_array.markers.append(myMarker)
-
-
-
-
-            myMarker.type = Marker.LINE_STRIP
-            myMarker.scale.x = 0.02
-
-            myMarker.points.append(self.lowest_point[i])
-            myMarker.points.append(self.other_point[i])
-            myMarker.colors.append(line_color)
-            myMarker.colors.append(line_color)
-
-
-            marker_array.markers.append(myMarker)
+                if  (self.highest_point[i].x != self.closest_point[i].x and self.highest_point[i].y != self.closest_point[i].y):
+                    myMarker.type = Marker.LINE_STRIP
+                    myMarker.scale.x = 0.02
+                    myMarker.points.append(self.highest_point[i])
+                    myMarker.points.append(self.closest_point[i])
+                    myMarker.colors.append(line_color)
+                    myMarker.colors.append(line_color)
+                    marker_array.markers.append(myMarker)
 
 
 
+                if  (self.highest_point[i].x != self.closest_point[i].x and self.highest_point[i].y != self.closest_point[i].y and self.lowest_point[i].x != self.closest_point[i].x and self.lowest_point[i].y != self.closest_point[i].y):
+                    myMarker.type = Marker.LINE_STRIP
+                    myMarker.scale.x = 0.02
+
+                    myMarker.points.append(self.lowest_point[i])
+                    myMarker.points.append(self.other_point[i])
+                    myMarker.colors.append(line_color)
+                    myMarker.colors.append(line_color)
 
 
-            myMarker.type = Marker.LINE_STRIP
-            myMarker.scale.x = 0.02
-
-            myMarker.points.append(self.highest_point[i])
-            myMarker.points.append(self.other_point[i])
-            myMarker.colors.append(line_color)
-            myMarker.colors.append(line_color)
+                    marker_array.markers.append(myMarker)
 
 
-            marker_array.markers.append(myMarker)
+
+
+
+                    myMarker.type = Marker.LINE_STRIP
+                    myMarker.scale.x = 0.02
+
+                    myMarker.points.append(self.highest_point[i])
+                    myMarker.points.append(self.other_point[i])
+                    myMarker.colors.append(line_color)
+                    myMarker.colors.append(line_color)
+
+
+                    marker_array.markers.append(myMarker)
         return marker_array
 
             
