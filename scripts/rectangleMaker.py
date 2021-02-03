@@ -84,9 +84,11 @@ class rectangleMaker():
         for i,cluster in enumerate(self.clusters_list):
             myMarker = Marker()
             myMarker.id = i
-            myMarker.header.frame_id = "prostokaty"
+            myMarker.header.frame_id = "laser"
             myMarker.header.stamp = rospy.Time.now()
             ns = "Line"
+
+            myMarker.lifetime = rospy.Duration(0.2)
 
             #print(ns, type(ns))
 
