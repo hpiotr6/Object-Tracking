@@ -142,8 +142,8 @@ class ObstaclesDB(DB):
         #   predictions[data] = data.predict()
         # return predictions
 
-        return {self.data[0]: Point(3,4),
-                self.data[1]: Point(8,2)}
+        return {self.data[0]: Point(3, 4),
+                self.data[1]: Point(8, 2)}
 
     def assign(self, matchings: tuple) -> None:
         for obstacle in self.data:

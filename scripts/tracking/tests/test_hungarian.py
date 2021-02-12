@@ -13,7 +13,7 @@ class Hungarian_test(unittest.TestCase):
     def test_init(self):
         self.assertEquals(len(self.hung.detections), 2)
         self.assertEquals(len(self.hung.predictions), 2)
-    
+
     def test_create_matrix(self):
         matrix = self.hung.create_matrix()
         self.assertAlmostEqual(matrix[0][0], 5)

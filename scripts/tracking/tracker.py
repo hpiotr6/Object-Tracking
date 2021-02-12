@@ -1,4 +1,3 @@
-from hungarian_algorithm import algorithm
 from db import Point, Detection, Obstacle, DB, DetectionsDB, ObstaclesDB
 import numpy as np
 
@@ -56,19 +55,28 @@ class Tracker():
     def obstacles(self):
         return self.__obstacles
 
+    def create_obstacle(self, x: float, y: float) -> None:
+        o = Obstacle(x, y)
+        self.obstacles.add(o)
+
     def update_obstacles(self, row_inds: list, col_inds: list) -> None:
         for row, col in zip(row_inds, col_inds):
             self.obstacles.data[col].coords = self.detections.data[row].coords
+        row_max = max(row_inds)
+        full_rows = [ind for ind in range(row_max + 1)]
+        res = set(full_rows) - set(row_inds)
+        if len(res):
+            for ind in res:
+                x, y = self.detections.data[ind].coords
+                self.create_obstacle(x, y)
 
     def check(self):
         if len(self.obstacles.data) == 0:
             for detection in self.detections.data:
-                o = Obstacle(detection.x, detection.y)
-                self.obstacles.add(o)
+                self.create_obstacle(detection.x, detection.y)
         else:
             pass
             # obstacle_predictions = self.obstacles.predict()
             # matching = self.find_match(obstacle_predictions)
             # self.obstacles.assign(matching)
             # self.update_obstacles()
-
