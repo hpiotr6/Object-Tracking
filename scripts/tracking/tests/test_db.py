@@ -1,5 +1,5 @@
 import unittest
-from db import Point, Detection, Obstacle, DB, DetectionsDB, ObstaclesDB
+from tracker.db import Point, Detection, Obstacle, DB, DetectionsDB, ObstaclesDB
 
 
 class Obstacle_test(unittest.TestCase):

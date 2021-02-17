@@ -1,6 +1,6 @@
 import unittest
-from hungarian import HungarianAlgorithm
-from db import Point, Detection, Obstacle, DB, DetectionsDB, ObstaclesDB
+from tracker.hungarian import HungarianAlgorithm
+from tracker.db import Point, Detection
 from math import sqrt
 
 
