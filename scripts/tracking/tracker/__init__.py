@@ -1,5 +1,4 @@
 from .db import Point, Detection, Obstacle, DB, DetectionsDB, ObstaclesDB
-import numpy as np
 
 
 # class SingletonMeta(type):
@@ -59,10 +58,11 @@ class Tracker():
         o = Obstacle(x, y)
         self.obstacles.add(o)
 
-    def update_obstacles(self, row_inds: list, col_inds: list,
-                         detections_num: int) -> None:
+    def update_obstacles(self, row_inds: list,
+                         col_inds: list) -> None:
         for row, col in zip(row_inds, col_inds):
             self.obstacles.data[col].coords = self.detections.data[row].coords
+        detections_num = len(self.detections.data)
         full_rows = [ind for ind in range(detections_num)]
         res = set(full_rows) - set(row_inds)
         if len(res):

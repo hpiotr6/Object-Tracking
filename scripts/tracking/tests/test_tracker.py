@@ -23,17 +23,17 @@ class Tracker_test(unittest.TestCase):
         self.assertEqual(self.tracker.obstacles.data[1].id, 2)
 
     def test_update_obstacles_same(self):
-        self.tracker.update_obstacles([0, 1], [0, 1], 2)
+        self.tracker.update_obstacles([0, 1], [0, 1])
         self.assertEqual(len(self.tracker.obstacles.data), 2)
         self.assertEqual(self.tracker.obstacles.data[0].coords, (2, 3))
         self.assertEqual(self.tracker.obstacles.data[0].id, 1)
         self.assertEqual(self.tracker.obstacles.data[1].coords, (7, 1))
         self.assertEqual(self.tracker.obstacles.data[1].id, 2)
-        self.tracker.update_obstacles([0, 1], [0, 1], 2)
+        self.tracker.update_obstacles([0, 1], [0, 1])
         self.assertEqual(self.tracker.obstacles.data[1].id, 2)
 
     def test_update_obstacles_reverse(self):
-        self.tracker.update_obstacles([0, 1], [1, 0], 2)
+        self.tracker.update_obstacles([0, 1], [1, 0])
         self.assertEqual(len(self.tracker.obstacles.data), 2)
         self.assertEqual(self.tracker.obstacles.data[0].coords, (7, 1))
         self.assertEqual(self.tracker.obstacles.data[0].id, 1)
@@ -42,7 +42,7 @@ class Tracker_test(unittest.TestCase):
 
     def test_update_obstacles_more_detections(self):
         self.tracker.detections = [(2, 3), (7, 1), (5, 6), (10, 10)]
-        self.tracker.update_obstacles([0, 2], [1, 0], 4)
+        self.tracker.update_obstacles([0, 2], [1, 0])
         self.assertEqual(self.tracker.obstacles.data[0].coords, (5, 6))
         self.assertEqual(self.tracker.obstacles.data[1].coords, (2, 3))
         self.assertEqual(self.tracker.obstacles.data[0].id, 1)
@@ -53,7 +53,7 @@ class Tracker_test(unittest.TestCase):
 
     def test_update_obstacles_less_detections(self):
         self.tracker.detections = [(10, 20)]
-        self.tracker.update_obstacles([0], [1], 1)
+        self.tracker.update_obstacles([0], [1])
         self.assertEqual(len(self.tracker.obstacles.data), 2)
         self.assertEqual(self.tracker.obstacles.data[1].coords, (10, 20))
         self.assertEqual(self.tracker.obstacles.data[1].id, 2)
