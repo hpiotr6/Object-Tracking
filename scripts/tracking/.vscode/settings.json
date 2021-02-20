@@ -3,7 +3,6 @@
         "-v",
         "-s",
         "./tests/unit",
-        "./tests/integration",
         "-p",
         "test_*.py"
     ],

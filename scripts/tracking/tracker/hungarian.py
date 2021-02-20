@@ -10,6 +10,13 @@ class HungarianAlgorithm():
     ----------
     detections : Detection's list
     predictions : Point's list
+
+    Methods
+    --------
+    create_matrix():
+        Create cost matrix
+    get_indices():
+        Solve linear sum assigment problem and give cost matrix's indices.
     """
     def __init__(self, detections: list, predictions: list):
         self.__detections = detections

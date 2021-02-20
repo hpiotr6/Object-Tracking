@@ -1,25 +1,5 @@
-from .db import Point, Detection, Obstacle, DB, DetectionsDB, ObstaclesDB
+from .db import Obstacle, DetectionsDB, ObstaclesDB
 from .hungarian import HungarianAlgorithm
-
-
-# class SingletonMeta(type):
-#     """
-#     The Singleton class can be implemented in different ways in Python. Some
-#     possible methods include: base class, decorator, metaclass. We will use the
-#     metaclass because it is best suited for this purpose.
-#     """
-
-#     _instances = {}
-
-#     def __call__(cls, *args, **kwargs):
-#         """
-#         Possible changes to the value of the `__init__` argument do not affect
-#         the returned instance.
-#         """
-#         if cls not in cls._instances:
-#             instance = super().__call__(*args, **kwargs)
-#             cls._instances[cls] = instance
-#         return cls._instances[cls]
 
 
 class Tracker():
@@ -31,8 +11,16 @@ class Tracker():
     obstacles: ObstaclesDB object
     detections: DetectionsDB object
 
-    Methods:
+    Methods
     --------
+    create_obstacle(x, y):
+        Create obstacle form coordinates
+    update_obstacles(row_inds, col_inds):
+        Given indices from cost matrix assign detections to obstacles
+        if exists, otherwise create obstacle
+    check():
+        Check if obstacles exists than create obstacles,
+        otherwise update obstacles
     """
     def __init__(self):
         self.__obstacles = ObstaclesDB()
@@ -71,7 +59,7 @@ class Tracker():
                 x, y = self.detections.data[ind].coords
                 self.create_obstacle(x, y)
 
-    def check(self):
+    def check(self) -> None:
         if len(self.obstacles.data) == 0:
             for detection in self.detections.data:
                 self.create_obstacle(detection.x, detection.y)
@@ -80,4 +68,3 @@ class Tracker():
             hung = HungarianAlgorithm(self.detections.data, predictions)
             row_ind, col_ind = hung.get_indices()
             self.update_obstacles(row_ind, col_ind)
-            

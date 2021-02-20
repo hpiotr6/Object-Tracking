@@ -1,6 +1,5 @@
 import unittest
 from tracker import Tracker
-from tracker import Point
 
 
 class Tracker_test(unittest.TestCase):

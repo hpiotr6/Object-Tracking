@@ -1,5 +1,5 @@
 import unittest
-from tracker.db import Point, Detection, Obstacle, DB, DetectionsDB, ObstaclesDB
+from tracker.db import Obstacle, DetectionsDB
 
 
 class Obstacle_test(unittest.TestCase):
@@ -21,7 +21,3 @@ class DetectionsDB_test(unittest.TestCase):
         db.data = [(3, 5), (7, 8)]
         c2 = [point.coords for point in db.data]
         self.assertEqual(c2, [(3, 5), (7, 8)])
-
-
-class ObstaclesDB_test(unittest.TestCase):
-    pass

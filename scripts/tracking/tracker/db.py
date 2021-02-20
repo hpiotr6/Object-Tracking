@@ -43,6 +43,7 @@ class Detection(Point):
     ----------
     x : float
     y : float
+    coords : tuple
     """
     def __init__(self, x: float, y: float):
         super().__init__(x, y)
@@ -56,12 +57,15 @@ class Obstacle(Point):
     ----------
     x : float
     y : float
+    coords : tuple
     id : static int
 
     Methods:
     --------
     predict():
         Kalman prediction
+    get_prediction():
+        Give Point object from state vector.
     """
     __id = 0
 
@@ -75,7 +79,14 @@ class Obstacle(Point):
         Q_std = 0.001
         self.setup_kalman(R_std, Q_std)
 
-    def setup_kalman(self, R_std, Q_std, dt=1):
+    def __del__(self):
+        Obstacle.__id -= 1
+
+    @property
+    def id(self):
+        return self.__id
+
+    def setup_kalman(self, R_std, Q_std, dt=1) -> None:
         self.kf.F = np.array([[1, dt, 0,  0],
                               [0,  1, 0,  0],
                               [0,  0, 1, dt],
@@ -89,9 +100,6 @@ class Obstacle(Point):
         self.kf.x = np.array([[0, 0, 0, 0]]).T
         self.kf.P = np.eye(4) * 500.
 
-    def __del__(self):
-        Obstacle.__id -= 1
-
     def predict(self) -> Point:
         z = np.array([[self.x, self.y]]).T
         self.kf.predict()
@@ -99,13 +107,9 @@ class Obstacle(Point):
 
         return self.get_prediction()
 
-    def get_prediction(self):
+    def get_prediction(self) -> Point:
         x, y = self.kf.x[0], self.kf.x[2]
         return Point(x, y)
-
-    @property
-    def id(self):
-        return self.__id
 
 
 class DB():
@@ -116,23 +120,20 @@ class DB():
     ----------
     data: list
 
-    Methods:
+    Methods
     --------
-    add()
-    delete()
+    add():
+        Append new DB object.
     """
     def __init__(self):
         self.__data = []
 
-    def add(self, object) -> None:
-        self.__data.append(object)
-
-    def delete(self) -> None:
-        pass
-
     @property
     def data(self):
         return self.__data
+
+    def add(self, object_) -> None:
+        self.__data.append(object_)
 
 
 class DetectionsDB():
@@ -142,9 +143,6 @@ class DetectionsDB():
     Attributes
     ----------
     data: list
-
-    Methods:
-    --------
     """
     def __init__(self):
         self.__data = []
@@ -163,6 +161,17 @@ class DetectionsDB():
 class ObstaclesDB(DB):
     """
     A class to represent a obstacle database, subclasses DB.
+
+    Attributes
+    ----------
+    data: list
+
+    Methods
+    --------
+    add():
+        Append new ObstacleDB object.
+    predict():
+        For each obstacle predict and return list of predictions.
     """
     def __init__(self):
         super().__init__()
