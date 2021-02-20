@@ -24,13 +24,4 @@ class DetectionsDB_test(unittest.TestCase):
 
 
 class ObstaclesDB_test(unittest.TestCase):
-    def test_assign_obstacles(self):
-        obs = ObstaclesDB()
-        o1 = Obstacle(2, 3)
-        o2 = Obstacle(5, 6)
-        obs.add(o1)
-        obs.add(o2)
-        matchs = ((((1, 0.5), (2, 3)), 1.5), (((4, 7), (5, 6)), 4.5))
-        obs.assign(matchs)
-        self.assertEqual(o1.coords, (1, 0.5))
-        self.assertEqual(o2.coords, (4, 7))
+    pass

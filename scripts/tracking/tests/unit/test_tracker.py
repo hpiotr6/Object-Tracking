@@ -47,7 +47,6 @@ class Tracker_test(unittest.TestCase):
         self.assertEqual(self.tracker.obstacles.data[1].coords, (2, 3))
         self.assertEqual(self.tracker.obstacles.data[0].id, 1)
         self.assertEqual(self.tracker.obstacles.data[1].id, 2)
-        self.assertEqual(len(self.tracker.obstacles.data), 4)
         self.assertEqual(self.tracker.obstacles.data[2].coords, (7, 1))
         self.assertEqual(self.tracker.obstacles.data[2].id, 3)
 

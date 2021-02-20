@@ -1,3 +1,7 @@
+from filterpy.kalman import KalmanFilter
+import numpy as np
+
+
 class Point():
     """
     A class to represent a point.
@@ -66,11 +70,38 @@ class Obstacle(Point):
         Obstacle.__id += 1
         self.__id = Obstacle.__id
 
+        self.kf = KalmanFilter(dim_x=4, dim_z=2)
+        R_std = 0.35
+        Q_std = 0.001
+        self.setup_kalman(R_std, Q_std)
+
+    def setup_kalman(self, R_std, Q_std, dt=1):
+        self.kf.F = np.array([[1, dt, 0,  0],
+                              [0,  1, 0,  0],
+                              [0,  0, 1, dt],
+                              [0,  0, 0,  1]])
+        self.kf.u = 0.
+        self.kf.H = np.array([[1, 0, 0, 0],
+                              [0, 0, 1, 0]])
+
+        self.kf.R = np.eye(2) * R_std**2
+        self.kf.Q = np.eye(4) * Q_std**2
+        self.kf.x = np.array([[0, 0, 0, 0]]).T
+        self.kf.P = np.eye(4) * 500.
+
     def __del__(self):
         Obstacle.__id -= 1
 
     def predict(self) -> Point:
-        pass
+        z = np.array([[self.x, self.y]]).T
+        self.kf.predict()
+        self.kf.update(z)
+
+        return self.get_prediction()
+
+    def get_prediction(self):
+        x, y = self.kf.x[0], self.kf.x[2]
+        return Point(x, y)
 
     @property
     def id(self):
@@ -136,17 +167,8 @@ class ObstaclesDB(DB):
     def __init__(self):
         super().__init__()
 
-    def predict(self) -> dict:
-        # predictions = {}
-        # for data in self.data:
-        #   predictions[data] = data.predict()
-        # return predictions
-        pass
-
-    def assign(self, matchings: tuple) -> None:
-        for obstacle in self.data:
-            for matching in matchings:
-                detection_coords = matching[0][0]
-                prediction_coords = matching[0][1]
-                if obstacle.coords == prediction_coords:
-                    obstacle.coords = detection_coords
+    def predict(self) -> list:
+        preds = []
+        for o in self.data:
+            preds.append(o.predict())
+        return preds

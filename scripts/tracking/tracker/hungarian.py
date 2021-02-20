@@ -9,7 +9,7 @@ class HungarianAlgorithm():
     Attributes
     ----------
     detections : Detection's list
-    obstacles : Obstacle's list
+    predictions : Point's list
     """
     def __init__(self, detections: list, predictions: list):
         self.__detections = detections

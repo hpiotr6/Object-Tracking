@@ -1,6 +1,5 @@
 from .db import Point, Detection, Obstacle, DB, DetectionsDB, ObstaclesDB
 from .hungarian import HungarianAlgorithm
-from filterpy.kalman import KalmanFilter
 
 
 # class SingletonMeta(type):
@@ -77,9 +76,8 @@ class Tracker():
             for detection in self.detections.data:
                 self.create_obstacle(detection.x, detection.y)
         else:
-            pass
-            # self.hung = HungarianAlgorithm(DetectionsDB.data, predictions)
-            # obstacle_predictions = self.obstacles.predict()
-            # matching = self.find_match(obstacle_predictions)
-            # self.obstacles.assign(matching)
-            # self.update_obstacles()
+            predictions = self.obstacles.predict()
+            hung = HungarianAlgorithm(self.detections.data, predictions)
+            row_ind, col_ind = hung.get_indices()
+            self.update_obstacles(row_ind, col_ind)
+            
