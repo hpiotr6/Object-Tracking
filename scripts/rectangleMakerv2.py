@@ -9,7 +9,7 @@ from laser_geometry import LaserProjection
 from sensor_msgs import point_cloud2
 from visualization_msgs.msg import Marker, MarkerArray
 from geometry_msgs.msg import Point
-from std_msgs.msg import ColorRGBA
+from std_msgs.msg import ColorRGBA,Float64MultiArray
 
 import string
 import itertools
@@ -18,6 +18,15 @@ def clusters(visualization_marker):
     global markers
     markers = visualization_marker.markers
     #[0].points
+
+
+class Rectangle():
+
+    def __init__(self,p1,p2,p3,p4):
+        self.p1 = p1
+        self.p2 = p2
+        self.p3 = p3
+        self.p4 = p4
 
 
 
@@ -36,25 +45,28 @@ class rectangleMaker():
         self.points = []
         self.closest_point = []
         self.other_point = []
+        self.middle_point_tuple = []
 
 
     def findClosestPoint(self, _points, h_point, l_point):
         _max = 0
         newMax = 0
         closest_point = 0
-
-        for point in _points:
-            A = h_point.y-l_point.y
-            print(A)
-            
-            B = h_point.x - l_point.x
-            print(B)
-            if math.sqrt(A*A+B*B)!=0:
-                newMax = abs(A*(l_point.x - point.x) + B*(point.y - l_point.y))/math.sqrt(A*A+B*B)
-            if newMax > _max:
-                _max = newMax
-                closest_point = point
-        return closest_point
+        if _points:
+            for point in _points:
+                A = h_point.y-l_point.y
+                print(A)
+                
+                B = h_point.x - l_point.x
+                print(B)
+                if math.sqrt(A*A+B*B)!=0:
+                    newMax = abs(A*(l_point.x - point.x) + B*(point.y - l_point.y))/math.sqrt(A*A+B*B)
+                else:
+                    newMax = abs(h_point.x - point.x)
+                if newMax > _max:
+                    _max = newMax
+                    closest_point = point
+            return closest_point
     
 
     def findLowestHighestPoint(self, _points):
@@ -70,6 +82,15 @@ class rectangleMaker():
                     points = []
                     points.append((point,point2))
         return points[0]
+
+
+
+    def getMiddlePoint(self, i):
+        p = Point()
+        p.x = (self.closest_point[i].x+self.other_point[i].x)/2
+        p.y = (self.closest_point[i].y+self.other_point[i].y)/2
+        p.z = 0
+        return p
 
 
     def rectangleMaker(self):
@@ -88,6 +109,7 @@ class rectangleMaker():
             self.points.append(_points)
             self.closest_point.append(self.findClosestPoint(_points, self.highest_point[i], self.lowest_point[i]))
             self.other_point.append(self.findOtherPoint(i))
+            self.middle_point_tuple.append((self.getMiddlePoint(i).x, self.getMiddlePoint(i).y))
         return self.marker_function()
 
     def findOtherPoint(self, i):
@@ -108,6 +130,11 @@ class rectangleMaker():
     def getRectanglePoints(self):
         return self.highest_point, self.lowest_point, self.closest_point, self.other_point
 
+    def getMiddlePointsTuple(self):
+        floatArray = Float64MultiArray()
+        for element in self.middle_point_tuple:
+             floatArray.data.append(element)
+        return floatArray
 
 
     def marker_function(self):
@@ -193,6 +220,7 @@ class rectangleMaker():
 
 
 if __name__== "__main__":
+    
     markers = []
     rospy.Subscriber('/visualization_marker', MarkerArray, clusters)
     rospy.init_node("rectangleMaker_node", anonymous=True)
@@ -200,16 +228,17 @@ if __name__== "__main__":
     rate=rospy.Rate(10) # 10Hz
 
     pub = rospy.Publisher('/rectangleMakerv2', MarkerArray, queue_size=10)
-    pub2 = rospy.Publisher('points', points, queque_size = 10)
+    pub2 = rospy.Publisher('/middlePoint', Float64MultiArray, queue_size=10)
     rectangleMaker_node = rectangleMaker()
 
     while not rospy.is_shutdown():
         print("\n\n//////////////////// NEXT LOOP ////////////////////\n")
         rate.sleep()
         list_of_markers = rectangleMaker_node.rectangleMaker()
+        middlePointsTuple= rectangleMaker_node.getMiddlePointsTuple()
         rate.sleep()
         rectanglePoints = rectangleMaker_node.getRectanglePoints()
-        pub.publish(list_of_markers)#wyslanie treści markera
-        pub2.publish(rectanglePoints)
+        pub.publish(list_of_markers)
+        pub2.publish(middlePointsTuple)
     
     print("END")
