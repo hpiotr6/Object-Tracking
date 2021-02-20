@@ -166,6 +166,7 @@ include_directories(
  catkin_install_python(PROGRAMS
    scripts/rectangleMaker.py
    scripts/scan_clustering.py
+   scripts/rectangleMakerv2.py
    scripts/distance_filter.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
