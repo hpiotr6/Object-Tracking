@@ -11,25 +11,18 @@ from geometry_msgs.msg import Point
 from std_msgs.msg import ColorRGBA
 
 import string
-import itertools
 import math
 
 
-
 class Cluster():
-    id_iter = itertools.count()
 
     def __init__(self):
-        #self._id = next(Cluster.id_iter)
         self._list_of_points = []
     
     def add_point(self, new_point):
         if not new_point in self.get_list_of_points():
             self._list_of_points.append(new_point)
-    
-    # def get_id(self):
-    #     return self._id
-    
+
     def get_name(self):
         return "C" + string(self._id)
     
@@ -52,8 +45,8 @@ class Cluster():
                 answer = True
         return answer
 
-
 class Clustering():
+
     def __init__(self):
         self.laser_proj = LaserProjection()
         #self.pc_pub = rospy.Publisher("/laserPointCloud", pc2, queue_size=1)
@@ -94,31 +87,9 @@ class Clustering():
                 first_cluster.add_point(point)
                 self.add_cluster_to_clusters_list(first_cluster)
 
-            # print("\n\n==== NEW POINT ====")
-            # print(' - liczba punktow: ', len(self.list_of_point_namedtuples),)
-            # print(' - liczba clusterow: ', len(self.clusters_list))
-
             '''
             # 3 # szukanie najblizszego punktu w przod do aktualnie rozpatrywanego
-            '''
-            # if self.N_horizon+2 < N and len(self.scan.ranges)*self.scan.angle_increment>358:
-            #     a = n+1
-            #     if n == N-1:
-            #         a = 0
-
-            #     min_distance = distance_between_points(self.list_of_point_namedtuples[n], self.list_of_point_namedtuples[a])
-            #     point_n = self.list_of_point_namedtuples[n]
-            #     point_o = self.list_of_point_namedtuples[a]
-            #     for i in range(2, self.N_horizon+1):
-            #         b = n+i
-            #         if n+i > N-1:
-            #             b = n+i - N
-            #         new_distance = distance_between_points(self.list_of_point_namedtuples[n], self.list_of_point_namedtuples[b])
-            #         if min_distance > new_distance:
-            #             min_distance = new_distance
-            #             point_o = self.list_of_point_namedtuples[b]
-            # else:
-                        
+            '''    
             a = n+1
             if n == N-1:
                 break
@@ -134,19 +105,12 @@ class Clustering():
                 if min_distance > new_distance:
                     min_distance = new_distance
                     point_o = self.list_of_point_namedtuples[b]
-
             
             self.D_dist_0 = self.find_D_max(index_n)
-            #print(point.index ,D_dist_0)
-            #print("\n"," - D_dist_0: ", D_dist_0 , "\n - min distance: ", min_distance)
-            #print("PUNKTY:\n - n:  ", point_n.index, "\n - m:  " ,point_o.index)
+
             if min_distance < self.D_dist_0: # 4 #
                 self.cluster_2_points(point_n, point_o) # 5 #
 
-                #print("\n ==> CLUSTER BY DISTANCE")
-
-            #else: 
-            #print(point_n.index, point_o.index)
             min_distance = distance_between_points(self.list_of_point_namedtuples[n], self.list_of_point_namedtuples[n-1])
             sigma_0 = math.radians(23) # ROSPARAM !!
             phi_0 = math.radians(27) # ROSPARAM !
@@ -158,16 +122,13 @@ class Clustering():
                 if n-i<=0:
                     break
                 new_distance = distance_between_points(self.list_of_point_namedtuples[n], self.list_of_point_namedtuples[n-i])
-                #print('ELSE new distance', new_distance)
+
                 if min_distance > new_distance:
                     min_distance = new_distance
                     point_j = self.list_of_point_namedtuples[n-i]
             '''
             sprawdzenie czy n-1, n, n+1 są w linni
-            '''
-            # if (abs(point_o.index - point_n.index)< self.N_horizon+1 and
-            #     abs(point_n.index - point_j.index)< self.N_horizon+1):
-            # ##  
+            ''' 
             v1 = (point_n[0]-point_j[0], point_n[1]- point_j[1])
             v2 = (point_o[0]-point_n[0], point_o[1]- point_n[1])
             u = (point_o[0]- point_j[0], point_o[1]- point_j[1])
@@ -180,21 +141,11 @@ class Clustering():
                 D_v_max = lenght_of_vector(v1)
             else:
                 D_v_max = lenght_of_vector(v2)
-                # print('\n-------\n',point_j.index, point_n.index, point_o.index  )
-                # print(sigma < sigma_0, phi < phi_0, D_v_max < D_angle_0)
-                # print('sigma < sigma_0: ', sigma ,'<', sigma_0, 'phi < phi_0: ', phi ,'<', phi_0, 'D_v_max < D_angle_0: ', D_v_max ,'<', D_angle_0, )
-                # print(sigma > 1.5184364492, D_v_max < D_angle_0)
-                # print('function to evaluate: ' , function_to_evaluate_D_0_angle(phi, alpha_0))
-                ##
-                
-                # sigma, D_angle_0, D_v_max = self.function_to_evaluate_sigma_Dangle0_Dvmax(point_j, point_n, point_o)
 
             if (sigma < sigma_0 and phi < phi_0 and D_v_max < D_angle_0): # 12 #
                 self.cluster_2_points(point_j, point_n)
                 self.cluster_2_points(point_n, point_o)
                 continue
-                    #print(point_j.index, point_n.index, point_o.index)
-                    #print("\n ==> CLUSTER BY ANGLE")
 
             if n-2>=0 and n+2<N:
                 point_p = self.list_of_point_namedtuples[n+2]
@@ -215,7 +166,7 @@ class Clustering():
                     mean_next = find_mean_coordinates_of_points(next_p)
 
                     sigma, D_angle_0, D_v_max = self.function_to_evaluate_sigma_Dangle0_Dvmax(mean_prev, point_n, mean_next)
-                    #print('sigma2 = ', sigma)
+
                     if (sigma < sigma_0 and D_v_max < D_angle_0): # 12 #
                         self.cluster_2_points(point_j, point_n)
                         self.cluster_2_points(point_n, point_o)
@@ -239,16 +190,6 @@ class Clustering():
                         sigma, D_angle_0, D_v_max = self.function_to_evaluate_sigma_Dangle0_Dvmax(mean_prev, point_j, point_n)
                         
                         if (sigma < sigma_0 and D_v_max < D_angle_0): # 12 #
-                            #print('sigma3 =', sigma)
-                            if point_n.index == 644:
-                                print(point_h)
-                                print(point_i)
-                                print(point_j)
-                                print(point_n)
-
-                                
-                                print(point_o)
-                                print(distance_between_points(point_j, point_n))
                             self.cluster_2_points(point_j, point_n)
                             continue
                     
@@ -260,8 +201,8 @@ class Clustering():
                             next_p.append(point_q)
                             mean_prev = find_mean_coordinates_of_points(prev_p)
                             mean_next = find_mean_coordinates_of_points(next_p)
-
                             sigma, D_angle_0, D_v_max = self.function_to_evaluate_sigma_Dangle0_Dvmax(mean_prev, point_n, mean_next)
+
                             if (sigma < sigma_0 and D_v_max < D_angle_0): # 12 #
                                 self.cluster_2_points(point_j, point_n)
                                 self.cluster_2_points(point_n, point_o)
@@ -273,24 +214,18 @@ class Clustering():
                                 self.cluster_2_points(point_n, point_o)
                                 continue
 
-
             if self.check_if_point_is_clustered(point_n) is False:
                 new_cluster = Cluster()
                 new_cluster.add_point(point_n)
                 self.add_cluster_to_clusters_list(new_cluster)
-                    
-        # #print(len(self.clusters_list))
+
         for cluster in self.clusters_list:
             if len(cluster.get_list_of_points())<3:
                 self.clusters_list.remove(cluster)
         
-
-
         return self.clusters_list
 
     def merge_clusters_by_mean_point(self, list_of_previous_clusters):
-        print(len(list_of_previous_clusters))
-        print(len(self.clusters_list))
         if list_of_previous_clusters == None or len(self.clusters_list)==0 or len(list_of_previous_clusters)==0:
             return self.clusters_list
         else:
@@ -298,20 +233,17 @@ class Clustering():
                 return self.clusters_list
             elif len(self.clusters_list) > len(list_of_previous_clusters):
                 print("robi się")
-                #current_number_of_clusters = len(self.clusters_list)
+
                 i = 1
                 while i < len(self.clusters_list):
                     for j in range(len(list_of_previous_clusters)):
                         previous_fisrt_point = list_of_previous_clusters[j].get_list_of_points()[0]
                         current_first_point = self.clusters_list[i-1].get_list_of_points()[0]
-                        
                         translation_vector = (current_first_point[0]-previous_fisrt_point[0], current_first_point[1]-previous_fisrt_point[1])
-                        #print(j)
-                        print('translation_vector =', translation_vector)
+                        #print('translation_vector =', translation_vector)
                         previous_cluster = list_of_previous_clusters[j]
                         current_cluster_1 = self.clusters_list[i-1]
                         current_cluster_2 = self.clusters_list[i]
-                        #print(i)
                         current_mean_x = (current_cluster_1.get_mean_point_of_all_points_in_cluster()[0] + current_cluster_2.get_mean_point_of_all_points_in_cluster()[0])/2
                         current_mean_y = (current_cluster_1.get_mean_point_of_all_points_in_cluster()[1] + current_cluster_2.get_mean_point_of_all_points_in_cluster()[1])/2
                         current_mean = (current_mean_x, current_mean_y)
@@ -324,7 +256,6 @@ class Clustering():
                         else:
                             i+=1
                     
-
     def check_if_point_is_clustered(self, point):
         answer = False
         for cluster in self.clusters_list:
@@ -333,7 +264,6 @@ class Clustering():
                 break
         return answer
  
-    
     def find_cluster_for_point(self, p):
         for cluster in self.clusters_list:
             if p in cluster.get_list_of_points():
@@ -353,10 +283,8 @@ class Clustering():
 
         n_check = self.check_if_point_is_clustered(point_n)
         m_check = self.check_if_point_is_clustered(point_o)
-        #print(n_check == False, m_check == False)
+
         if n_check == False and m_check==False:
-            
-        # if len(self.clusters_list) == 0:
             new_cluster = Cluster()
             new_cluster.add_point(point_n)
             new_cluster.add_point(point_o)
@@ -367,13 +295,10 @@ class Clustering():
             for cluster in self.clusters_list:
                 if point_n in cluster.get_list_of_points():
                     cluster.add_point(point_o)
-
-                    #print(' - n juz ma')
-                    #print(len(self.clusters_list))
                     return 0
+
                 elif point_o in cluster.get_list_of_points():
                     cluster.add_point(point_n)
-                    #print(' - m juz ma')
                     return 0
 
         elif n_check == True and m_check==True:
@@ -403,35 +328,29 @@ class Clustering():
     def add_cluster_to_clusters_list(self, new_cluster):
         self.clusters_list.append(new_cluster)
 
-    # adaptice breakpoint detection (3.3)
     def find_D_max(self, n_index):
+        # adaptive breakpoint detection (3.3)
         sigma_r = 0.01 # ROSPARAM!
         r_n_minus_1 = self.scan.ranges[n_index-1]
         if math.isnan(r_n_minus_1):
             return 3*sigma_r 
 
-        
         lambda_angle = self.find_angle_of_scan_index(n_index-1)
         delta_phi_angle = self.find_angle_of_scan_index(n_index) - lambda_angle
-
-
         d_max = abs(r_n_minus_1*(math.sin(delta_phi_angle)/math.sin(lambda_angle - delta_phi_angle)))
-        
-        #return d_max
+
         if d_max > 0.25:
             d_max = 0.25
         
         return d_max + 3*sigma_r # sigma_r to odleglosc rozdzielczosci lidara 
         
     def find_angle_of_scan_index(self, scan_index):
-        #angle_increment = 0.006135923322290182
         angle_increment = self.scan.angle_increment
         angle_min = self.scan.angle_min
         angle = angle_min + scan_index*angle_increment
         return angle
 
     def function_to_evaluate_sigma_Dangle0_Dvmax(self, point1, point2, point3):
-        #print('---' , point1.index, point2.index, point3.index)
         D_extra_max = 0.1 # powtorzenie, ROSPARAM
         alpha_0 = math.radians(30) # powtorzenie, ROSPARAM
         v1 = (point1[0]-point2[0], point1[1]- point2[1])
@@ -448,70 +367,42 @@ class Clustering():
             D_v_max = lenght_of_vector(v2)
         return sigma, D_angle_0, D_v_max
 
-
-
     def marker_function(self):
         
         marker_array = MarkerArray()
         marker_array.markers.clear()
         for cluster in self.clusters_list:
-            
+
             myMarker = Marker()
             myMarker.header.frame_id = "laser"
             myMarker.header.stamp = rospy.Time.now()
             ns = "cluster" + str(self.clusters_list.index(cluster))
             myMarker.ns = ns
-            #print(ns, type(ns))
             myMarker.type = Marker.POINTS
             myMarker.action = Marker.ADD
             myMarker.pose.orientation.w = 1.0
-
             myMarker.id = 0
-
-
             myMarker.scale.x = 0.005
             myMarker.scale.y = 0.005
-
-            
-
             myMarker.color.g = 0.0
             myMarker.color.a = 1.0
             myMarker.color.r= 1.0
             myMarker.color.b = 0
-
             myMarker.lifetime = rospy.Duration(0.1)
             print(' - liczba clusterow: ' ,len(self.clusters_list))
-            
+        
             for point in cluster.get_list_of_points():
-                #print(distance_between_points((0,0), point), point.index)
                 (x , y) = (point.x, point.y)
                 p = Point()
                 p.x = x
                 p.y = y
                 p.z = 0
-                #myMarker.color = [1, 0.9, 0, 0]
                 myMarker.points.append(p)
-
                 myMarker.colors.append(myMarker.color)
 
-
-                # (x , y) = cluster.get_mean_point_of_all_points_in_cluster()
-                # p = Point()
-                # p.x = x
-                # p.y = y
-                # p.z = 0
-                # points.points.append(p)
-            #print(cluster.get_list_of_points())
             print('pierwszy: ',cluster.get_list_of_points()[0],'ostatni: ',cluster.get_list_of_points()[-1] )
             print('liczba punktow w clusterze: ' , len(cluster.get_list_of_points()),'\n')
-            
             marker_array.markers.append(myMarker)
-
-
-        #myMarker.lifetime = rospy.Duration
-
-        #points.color.g = 0.9
-        #points.color.b = 0.2
 
         return marker_array
 
@@ -556,7 +447,6 @@ def lenght_of_vector(vector):
 def distance_between_points(a, b):
     return math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2)
 
-
 if __name__== "__main__":
 
     rospy.init_node("clustering_node", anonymous=True)
@@ -573,10 +463,8 @@ if __name__== "__main__":
         cluster_node.clusters_list = []
         cluster_node.scan_to_pc2()
         cluster_node.clustering()
-        
         cluster_node.merge_clusters_by_mean_point(list_of_previous_clusters)
         list_of_markers = cluster_node.marker_function()
-        
         pub.publish(list_of_markers)#wyslanie treści markera
         list_of_previous_clusters = cluster_node.clusters_list
         rate.sleep()
