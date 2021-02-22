@@ -1,0 +1,7 @@
+N_horizon: 10
+sigma_r: 0.01
+sigma_0: deg(23)
+phi_0: deg(27)
+D_extra_max: 0.1
+alpha_0: deg(30)
+distance_threshold: 0.1

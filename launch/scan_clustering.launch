@@ -1,0 +1,10 @@
+<launch>
+
+    <rosparam command="load" file="$(find scan_clustering_kalman)/config/parameters.yaml" />
+
+    <node name="distance_filter" pkg="scan_clustering_kalman" type="distance_filter.py" />
+    <node name="scan_clustering" pkg="scan_clustering_kalman" type="scan_clustering.py" />
+   
+
+
+</launch>

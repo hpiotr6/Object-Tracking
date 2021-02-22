@@ -54,6 +54,13 @@ class Clustering():
         self.clusters_list = []
         self.scan = LaserScan()
         self.point_cloud = pc2()
+        self.parameters = ({"N_horizon": rospy.get_param("N_horizon"), 
+                            "sigma_r": rospy.get_param("sigma_r"), 
+                            "sigma_0": rospy.get_param("sigma_0"), 
+                            "phi_0":rospy.get_param("phi_0"), 
+                            "D_extra_max": rospy.get_param("D_extra_max"), 
+                            "alpha_0": rospy.get_param("alpha_0"),
+                            "distance_threshold": rospy.get_param("distance_threshold")})
 
     def scan_callback(self, data):
         self.scan = data
@@ -67,10 +74,9 @@ class Clustering():
         self.list_of_point_namedtuples = point_cloud2.read_points_list(self.point_cloud)
         # lista wspolrzednych chmury punktow
 
-        distance_threshold = 0.05 # DAĆ JAKO ROSPARAM!
         clusters_list = [Cluster]
         N = len(self.list_of_point_namedtuples)
-        self.N_horizon = 10  # DAĆ JAKO ROSPARAM!
+        self.N_horizon = self.parameters["N_horizon"]
         if self.N_horizon >= N:
             self.N_horizon = N-1
 
@@ -112,10 +118,10 @@ class Clustering():
                 self.cluster_2_points(point_n, point_o) # 5 #
 
             min_distance = distance_between_points(self.list_of_point_namedtuples[n], self.list_of_point_namedtuples[n-1])
-            sigma_0 = math.radians(23) # ROSPARAM !!
-            phi_0 = math.radians(27) # ROSPARAM !
-            D_extra_max = 0.1 # ROSPARAM !
-            alpha_0 = math.radians(30) # ROSPARAM !
+            sigma_0 = self.parameters["sigma_0"]
+            phi_0 = self.parameters["phi_0"]
+            D_extra_max = self.parameters["D_extra_max"]
+            alpha_0 = self.parameters["alpha_0"]
             # 6 # znalezienie najblizszego punktu w tyl
             point_j = self.list_of_point_namedtuples[n-1]
             for i in range(1, self.N_horizon+1):
@@ -249,7 +255,8 @@ class Clustering():
                         current_mean = (current_mean_x, current_mean_y)
                         previous_mean = previous_cluster.get_mean_point_of_all_points_in_cluster()
                         previous_mean = (previous_mean[0]+translation_vector[0], previous_mean[1]+translation_vector[1]) # uwzględnienie przesunięcia
-                        if distance_between_points(previous_mean, current_mean) < 0.1: # ROSPARAM
+                        distance_threshold = self.parameters["distance_threshold"]#0.1
+                        if distance_between_points(previous_mean, current_mean) < distance_threshold:
                             print(distance_between_points(previous_mean, current_mean))
                             self.merge_clusters(current_cluster_1, current_cluster_2)
                             print('MERGE dwoch')
@@ -330,7 +337,7 @@ class Clustering():
 
     def find_D_max(self, n_index):
         # adaptive breakpoint detection (3.3)
-        sigma_r = 0.01 # ROSPARAM!
+        sigma_r = self.parameters["sigma_r"]
         r_n_minus_1 = self.scan.ranges[n_index-1]
         if math.isnan(r_n_minus_1):
             return 3*sigma_r 
@@ -351,8 +358,8 @@ class Clustering():
         return angle
 
     def function_to_evaluate_sigma_Dangle0_Dvmax(self, point1, point2, point3):
-        D_extra_max = 0.1 # powtorzenie, ROSPARAM
-        alpha_0 = math.radians(30) # powtorzenie, ROSPARAM
+        D_extra_max = self.parameters["D_extra_max"]
+        alpha_0 = self.parameters["alpha_0"]
         v1 = (point1[0]-point2[0], point1[1]- point2[1])
         v2 = (point2[0]-point3[0], point2[1]- point3[1])
         sigma = find_sigma(v1, v2)
