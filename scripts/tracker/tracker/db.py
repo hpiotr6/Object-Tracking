@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from filterpy.kalman import KalmanFilter
 import numpy as np
 

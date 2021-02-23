@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from .db import Obstacle, DetectionsDB, ObstaclesDB
 from .hungarian import HungarianAlgorithm
 

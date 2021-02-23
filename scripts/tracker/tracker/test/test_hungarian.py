@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import unittest
 from tracker.hungarian import HungarianAlgorithm
 from tracker.db import Point, Detection
@@ -11,8 +13,8 @@ class Hungarian_test(unittest.TestCase):
         self.hung = HungarianAlgorithm(detections, predictions)
 
     def test_init(self):
-        self.assertEquals(len(self.hung.detections), 2)
-        self.assertEquals(len(self.hung.predictions), 2)
+        self.assertEqual(len(self.hung.detections), 2)
+        self.assertEqual(len(self.hung.predictions), 2)
 
     def test_create_matrix(self):
         matrix = self.hung.create_matrix()

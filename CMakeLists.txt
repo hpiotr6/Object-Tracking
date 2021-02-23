@@ -168,6 +168,7 @@ include_directories(
    scripts/scan_clustering.py
    scripts/rectangleMakerv2.py
    scripts/distance_filter.py
+   scripts/track.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

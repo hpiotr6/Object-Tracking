@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import unittest
 from tracker.db import Obstacle, DetectionsDB
 

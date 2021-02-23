@@ -3,7 +3,7 @@
 
 import rospy
 from std_msgs.msg import Float64MultiArray
-from tracking.tracker import Tracker
+from tracker import Tracker
 
 
 class Tracking:
