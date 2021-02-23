@@ -31,8 +31,26 @@ class Tracking:
         self.obstacles = []
         self.tracker = Tracker()
 
-    @property
-    def obstacles(self):
+    # @property
+    # def obstacles(self):
+    #     return self.obstacles
+    
+    # @obstacles.setter
+    # def obstacles(self, value):
+    #     self.obstacles = value
+
+    # @property
+    # def detections(self):
+    #     return self.detections
+
+    # @detections.setter
+    # def detections(self, value):
+    #     self.detections = value
+
+    def get_detections(self):
+        return self.detections
+
+    def get_obstacles(self):
         return self.obstacles
 
     def callback(self, data) -> None:
@@ -46,5 +64,7 @@ if __name__ == "__main__":
     tracking_node = Tracking()
     rate = rospy.Rate(10)  # 10Hz
     while not rospy.is_shutdown():
-        print([obstacle.coords for obstacle in tracking_node.obstacles])
+        print([detections.coords for detections
+               in tracking_node.get_detections()])
+        print([obstacle.coords for obstacle in tracking_node.get_obstacles()])
         rate.sleep()
