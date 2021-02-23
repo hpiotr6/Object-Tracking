@@ -5,6 +5,7 @@
     <node name="distance_filter" pkg="scan_clustering_kalman" type="distance_filter.py" />
     <node name="scan_clustering" pkg="scan_clustering_kalman" type="scan_clustering.py" />
    
-
+    <!-- Launch rviz -->
+    <node type="rviz" name="rviz" pkg="rviz" args="-d $(find scan_clustering_kalman)/config/rviz_config_clusters.rviz" />
 
 </launch>
