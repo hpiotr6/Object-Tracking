@@ -11,6 +11,8 @@ from visualization_msgs.msg import Marker, MarkerArray
 from geometry_msgs.msg import Point
 from std_msgs.msg import ColorRGBA,Float64MultiArray
 
+from scan_clustering_kalman.msg import PolygonArray
+
 import string
 import itertools
 import math
