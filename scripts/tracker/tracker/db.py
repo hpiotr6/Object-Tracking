@@ -37,6 +37,49 @@ class Point():
         return self.__y
 
 
+class Polygon():
+    """
+    A class to represent a polygon.
+
+    Attributes
+    ----------
+    vertices : list of geometry_msgs/Point32.msg
+    center : Point
+
+    Methods:
+    --------
+    compute_center(): 
+        Compute mass center of polygon
+    """
+
+    def __init__(self, vertices: list):
+        self.__vertices = [Point(v.x, v.y) for v in vertices]
+        self.__center = self.compute_center()
+
+    @property
+    def vertices(self):
+        return self.__vertices
+
+    @vertices.setter
+    def vertices(self, value):
+        self.__vertices = value
+
+    @property
+    def center(self):
+        return self.__center
+
+    @center.setter
+    def center(self, value):
+        self.__center = value
+
+    def compute_center(self) -> Point:
+        x_list = [v.x for v in self.__vertices]
+        y_list = [v.y for v in self.__vertices]
+        x = sum(x_list) / len(x_list)
+        y = sum(y_list) / len(y_list)
+        return Point(x, y)
+
+
 class Detection(Point):
     """
     A class to represent a detection, subclasses Point.
