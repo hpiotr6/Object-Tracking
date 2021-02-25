@@ -47,12 +47,6 @@ class Tracking:
     def detections(self, value):
         self.detections = value
 
-    # def get_detections(self):
-    #     return self.detections
-
-    # def get_obstacles(self):
-    #     return self.obstacles
-
     def callback(self, data) -> None:
         self.detections = data.data
         self.tracker.detections = self.detections

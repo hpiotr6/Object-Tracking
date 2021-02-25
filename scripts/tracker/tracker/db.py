@@ -51,15 +51,15 @@ class Detection(Point):
         super().__init__(x, y)
 
 
-class Obstacle(Point):
+class Obstacle():
     """
     A class to represent an obstacle, subclasses Point.
 
     Attributes
     ----------
-    x : float
-    y : float
-    coords : tuple
+    vertices : list of geometry_msgs/Point32.msg
+    x_center : float
+    y_center : float
     id : static int
 
     Methods:
@@ -71,9 +71,10 @@ class Obstacle(Point):
     """
     __id = 0
 
-    def __init__(self, x: float, y: float):
-        super().__init__(x, y)
+    def __init__(self, vertices: list, x_center: float, y_center: float):
         Obstacle.__id += 1
+        self.__vertices = [Point(v.x, v.y) for v in vertices]
+        self.__center = Point(x_center, y_center)
         self.__id = Obstacle.__id
 
         self.kf = KalmanFilter(dim_x=4, dim_z=2)
@@ -87,6 +88,22 @@ class Obstacle(Point):
     @property
     def id(self):
         return self.__id
+
+    @property
+    def vertices(self):
+        return self.__vertices
+
+    @vertices.setter
+    def vertices(self, value):
+        self.__vertices = value
+
+    @property
+    def center(self):
+        return self.__center
+
+    @center.setter
+    def center(self, value):
+        self.__center = value
 
     def setup_kalman(self, R_std, Q_std, dt=1) -> None:
         self.kf.F = np.array([[1, dt, 0,  0],
@@ -103,7 +120,7 @@ class Obstacle(Point):
         self.kf.P = np.eye(4) * 500.
 
     def predict(self) -> Point:
-        z = np.array([[self.x, self.y]]).T
+        z = np.array([[self.center.x, self.center.y]]).T
         self.kf.predict()
         self.kf.update(z)
 
