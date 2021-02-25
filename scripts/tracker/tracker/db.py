@@ -80,18 +80,17 @@ class Polygon():
         return Point(x, y)
 
 
-class Detection(Point):
+class Detection(Polygon):
     """
-    A class to represent a detection, subclasses Point.
+    A class to represent a detection, subclasses Polygon.
 
     Attributes
     ----------
-    x : float
-    y : float
-    coords : tuple
+    vertices : list of geometry_msgs/Point32.msg
+    center : Point
     """
-    def __init__(self, x: float, y: float):
-        super().__init__(x, y)
+    def __init__(self, vertices: list):
+        super().__init__(vertices)
 
 
 class Obstacle(Polygon):
@@ -186,7 +185,7 @@ class DetectionsDB():
 
     Attributes
     ----------
-    data: list
+    data: list of geometry_msgs/Polygon.msg
     """
     def __init__(self):
         self.__data = []
@@ -198,8 +197,8 @@ class DetectionsDB():
     @data.setter
     def data(self, detections: list):
         self.__data = []
-        for x, y in detections:
-            self.__data.append(Detection(x, y))
+        for polygon in detections:
+            self.__data.append(Detection(polygon.vertices))
 
 
 class ObstaclesDB(DB):

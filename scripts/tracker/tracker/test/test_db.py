@@ -16,15 +16,16 @@ class Obstacle_test(unittest.TestCase):
         self.assertIsInstance(self.o1.center, Point)
 
 
-# class DetectionsDB_test(unittest.TestCase):
-#     def test_init(self):
-#         db = DetectionsDB()
-#         db.data = [(1, 2), (3, 4)]
-#         c1 = [point.coords for point in db.data]
-#         self.assertEqual(c1, [(1, 2), (3, 4)])
-#         db.data = [(3, 5), (7, 8)]
-#         c2 = [point.coords for point in db.data]
-#         self.assertEqual(c2, [(3, 5), (7, 8)])
+class DetectionsDB_test(unittest.TestCase):
+    def test_init(self):
+        db = DetectionsDB()
+        db.data = [Polygon([Point(1, 2), Point(3, 4)]),
+                   Polygon([Point(8, 7), Point(10, 15)])]
+        c1 = [detection.vertices for detection in db.data]
+        self.assertIsInstance(c1[0][0], Point)
+        self.assertEqual(c1[0][0].coords, (1, 2))
+        self.assertEqual(c1[1][1].coords, (10, 15))
+        self.assertIsInstance(db.data[0], Polygon)
 
 class Polygon_test(unittest.TestCase):
     def setUp(self):
