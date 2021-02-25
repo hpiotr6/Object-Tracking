@@ -48,7 +48,7 @@ class Polygon():
 
     Methods:
     --------
-    compute_center(): 
+    compute_center():
         Compute mass center of polygon
     """
 
@@ -94,15 +94,14 @@ class Detection(Point):
         super().__init__(x, y)
 
 
-class Obstacle():
+class Obstacle(Polygon):
     """
-    A class to represent an obstacle, subclasses Point.
+    A class to represent an obstacle, subclasses Polygon.
 
     Attributes
     ----------
     vertices : list of geometry_msgs/Point32.msg
-    x_center : float
-    y_center : float
+    center : Point
     id : static int
 
     Methods:
@@ -114,10 +113,9 @@ class Obstacle():
     """
     __id = 0
 
-    def __init__(self, vertices: list, x_center: float, y_center: float):
+    def __init__(self, vertices: list):
+        super().__init__(vertices)
         Obstacle.__id += 1
-        self.__vertices = [Point(v.x, v.y) for v in vertices]
-        self.__center = Point(x_center, y_center)
         self.__id = Obstacle.__id
 
         self.kf = KalmanFilter(dim_x=4, dim_z=2)
@@ -131,22 +129,6 @@ class Obstacle():
     @property
     def id(self):
         return self.__id
-
-    @property
-    def vertices(self):
-        return self.__vertices
-
-    @vertices.setter
-    def vertices(self, value):
-        self.__vertices = value
-
-    @property
-    def center(self):
-        return self.__center
-
-    @center.setter
-    def center(self, value):
-        self.__center = value
 
     def setup_kalman(self, R_std, Q_std, dt=1) -> None:
         self.kf.F = np.array([[1, dt, 0,  0],

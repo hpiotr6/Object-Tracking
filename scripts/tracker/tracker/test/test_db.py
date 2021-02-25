@@ -4,18 +4,16 @@ import unittest
 from tracker.db import Obstacle, DetectionsDB, Point, Polygon
 
 
-# class Obstacle_test(unittest.TestCase):
-#     def setUp(self):
-#         self.o1 = Obstacle([Point(2,6, 3), Point(4, 5), Point(7, 8), Point(10, 10)])
-    
-#     def test_init(self):
-#         self.assertEqual(len(self.o1.vertices), 4)
-#         self.assertEqual(self.o1.vertices[0].coords, (2, 3))
-#         self.assertEqual(self.o1.vertices[3].coords, (10, 10))
-#         # self.assertEqual(self.o1.center.coords, (13, 15))
+class Obstacle_test(unittest.TestCase):
+    def setUp(self):
+        self.o1 = Obstacle([Point(2, 3), Point(4, 5),
+                            Point(7, 8), Point(10, 10)])
 
-#     def test_compute_center(self):
-#         self.o1
+    def test_init(self):
+        self.assertEqual(len(self.o1.vertices), 4)
+        self.assertEqual(self.o1.vertices[0].coords, (2, 3))
+        self.assertEqual(self.o1.vertices[3].coords, (10, 10))
+        self.assertIsInstance(self.o1.center, Point)
 
 
 # class DetectionsDB_test(unittest.TestCase):
