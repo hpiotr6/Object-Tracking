@@ -27,31 +27,31 @@ class Tracking:
                                     self.callback)
         self.pub = rospy.Publisher('/tracking', Float64MultiArray,
                                    queue_size=10)
-        self.detections = []
-        self.obstacles = []
+        self.__detections = []
+        self.__obstacles = []
         self.tracker = Tracker()
 
-    # @property
-    # def obstacles(self):
-    #     return self.obstacles
-    
-    # @obstacles.setter
-    # def obstacles(self, value):
-    #     self.obstacles = value
+    @property
+    def obstacles(self):
+        return self.__obstacles
 
-    # @property
-    # def detections(self):
+    @obstacles.setter
+    def obstacles(self, value):
+        self.obstacles = value
+
+    @property
+    def detections(self):
+        return self.__detections
+
+    @detections.setter
+    def detections(self, value):
+        self.detections = value
+
+    # def get_detections(self):
     #     return self.detections
 
-    # @detections.setter
-    # def detections(self, value):
-    #     self.detections = value
-
-    def get_detections(self):
-        return self.detections
-
-    def get_obstacles(self):
-        return self.obstacles
+    # def get_obstacles(self):
+    #     return self.obstacles
 
     def callback(self, data) -> None:
         self.detections = data.data
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     tracking_node = Tracking()
     rate = rospy.Rate(10)  # 10Hz
     while not rospy.is_shutdown():
-        print([detections.coords for detections
-               in tracking_node.get_detections()])
-        print([obstacle.coords for obstacle in tracking_node.get_obstacles()])
+        print([detection.coords for detection
+               in tracking_node.detections])
+        print([obstacle.coords for obstacle in tracking_node.obstacles])
         rate.sleep()
