@@ -1,3 +1,8 @@
+# distance_filter.py
+max_range: 1.0
+min_range: 0.05
+
+# scan_clustering.py
 N_horizon: 10
 sigma_r: 0.01
 sigma_0: deg(23)

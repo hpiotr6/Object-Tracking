@@ -9,8 +9,8 @@ from sensor_msgs import point_cloud2
 
 class Laser_distance_filter_and_2PC():
     def __init__(self):
-        self.max_range = 1.0
-        self.min_range = 0.05
+        self.max_range = rospy.get_param("max_range")
+        self.min_range = rospy.get_param("min_range")
         self.x = []
         self.y = []
         self.sub = rospy.Subscriber("/scan", LaserScan, self.scan_callback)
