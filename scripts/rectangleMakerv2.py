@@ -8,7 +8,7 @@ from sensor_msgs.msg import PointCloud2 as pc2
 from laser_geometry import LaserProjection
 from sensor_msgs import point_cloud2
 from visualization_msgs.msg import Marker, MarkerArray
-from geometry_msgs.msg import Point
+from geometry_msgs.msg import Point, Polygon
 from std_msgs.msg import ColorRGBA,Float64MultiArray
 
 from scan_clustering_kalman.msg import PolygonArray
@@ -18,8 +18,10 @@ import itertools
 import math
 def clusters(visualization_marker):
     global markers
+
     markers = visualization_marker.markers
     #[0].points
+
 
 
 class Rectangle():
@@ -133,10 +135,23 @@ class rectangleMaker():
         return self.highest_point, self.lowest_point, self.closest_point, self.other_point
 
     def getMiddlePointsTuple(self):
+        msg = PolygonArray()
+        
+
+
+
         floatArray = Float64MultiArray()
-        for element in self.middle_point_tuple:
-             floatArray.data.append(element)
-        return floatArray
+        for element in range(len(self.closest_point)):
+            p1 = Polygon()
+            p1.points.reserve(5)
+            p1.points.append(self.getMiddlePoint(i))
+            p1.points.append(self.highest_point(i))
+            p1.points.append(self.lowest_point(i))
+            p1.points.append(self.closest_point(i))
+            p1.points.append(self.other_point(i))
+            p1.header = header
+            msg.polygons.append(p1)
+        return msg
 
 
     def marker_function(self):
@@ -230,7 +245,7 @@ if __name__== "__main__":
     rate=rospy.Rate(10) # 10Hz
 
     pub = rospy.Publisher('/rectangleMakerv2', MarkerArray, queue_size=10)
-    pub2 = rospy.Publisher('/middlePoint', Float64MultiArray, queue_size=10)
+    pub2 = rospy.Publisher('/middlePoint', PolygonArray, queue_size=10)
     rectangleMaker_node = rectangleMaker()
 
     while not rospy.is_shutdown():
