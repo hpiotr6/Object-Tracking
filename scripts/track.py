@@ -65,8 +65,9 @@ class Tracking:
             myMarker.id = obstacle.id
             myMarker.header.frame_id = "laser"
             myMarker.header.stamp = rospy.Time.now()
-            ns = "Line"
-            myMarker.lifetime = rospy.Duration(0.2)
+            ns = "obstacle" + str(obstacle.id)
+            myMarker.ns = ns
+            myMarker.lifetime = rospy.Duration(0.1)
             myMarker.action = 0
             i = obstacle.id
             line_color = ColorRGBA()
