@@ -101,13 +101,13 @@ class rectangleMaker():
         self.reset()
         length = len(markers)
         self.markers = markers
-        for i in range(len(markers)):
+        for i in range(len(self.markers)):
             
             _points = self.markers[i].points
             self.numberOfPoints = len(_points)
             while not self.numberOfPoints>3:
                 self.numberOfPoints = len(_points)
-            self.clusters_list.append(markers[i])
+            self.clusters_list.append(self.markers[i])
             self.lowest_point.append(self.findLowestHighestPoint(_points)[0])
             self.highest_point.append(self.findLowestHighestPoint(_points)[1])
             self.points.append(_points)
@@ -243,7 +243,7 @@ if __name__== "__main__":
     rospy.Subscriber('/visualization_marker', MarkerArray, clusters)
     rospy.init_node("rectangleMaker_node", anonymous=True)
     print("ready")
-    rate=rospy.Rate(10) # 10Hz
+    rate=rospy.Rate(50) # 10Hz
 
     pub = rospy.Publisher('/rectangleMakerv2', MarkerArray, queue_size=10)
     pub2 = rospy.Publisher('/middlePoint', PolygonArray, queue_size=10)
