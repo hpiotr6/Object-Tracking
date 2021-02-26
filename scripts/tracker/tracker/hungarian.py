@@ -10,7 +10,7 @@ class HungarianAlgorithm():
 
     Attributes
     ----------
-    detections : Detection's list
+    detections : Detection's center list
     predictions : Point's list
 
     Methods

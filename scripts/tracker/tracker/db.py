@@ -37,29 +37,70 @@ class Point():
         return self.__y
 
 
-class Detection(Point):
+class Polygon():
     """
-    A class to represent a detection, subclasses Point.
+    A class to represent a polygon.
 
     Attributes
     ----------
-    x : float
-    y : float
-    coords : tuple
+    vertices : list of geometry_msgs/Point32.msg
+    center : Point
+
+    Methods:
+    --------
+    compute_center():
+        Compute mass center of polygon
     """
-    def __init__(self, x: float, y: float):
-        super().__init__(x, y)
+
+    def __init__(self, vertices: list):
+        self.__vertices = [Point(v.x, v.y) for v in vertices]
+        self.__center = self.compute_center()
+
+    @property
+    def vertices(self):
+        return self.__vertices
+
+    @vertices.setter
+    def vertices(self, value):
+        self.__vertices = value
+
+    @property
+    def center(self):
+        return self.__center
+
+    @center.setter
+    def center(self, value):
+        self.__center = value
+
+    def compute_center(self) -> Point:
+        x_list = [v.x for v in self.__vertices]
+        y_list = [v.y for v in self.__vertices]
+        x = sum(x_list) / len(x_list)
+        y = sum(y_list) / len(y_list)
+        return Point(x, y)
 
 
-class Obstacle(Point):
+class Detection(Polygon):
     """
-    A class to represent an obstacle, subclasses Point.
+    A class to represent a detection, subclasses Polygon.
 
     Attributes
     ----------
-    x : float
-    y : float
-    coords : tuple
+    vertices : list of geometry_msgs/Point32.msg
+    center : Point
+    """
+    def __init__(self, vertices: list):
+        super().__init__(vertices)
+
+
+class Obstacle(Polygon):
+    """
+    A class to represent an obstacle, subclasses Polygon.
+
+    Attributes
+    ----------
+    vertices : list of geometry_msgs/Point32.msg
+    center : Point
     id : static int
 
     Methods:
@@ -71,8 +112,8 @@ class Obstacle(Point):
     """
     __id = 0
 
-    def __init__(self, x: float, y: float):
-        super().__init__(x, y)
+    def __init__(self, vertices: list):
+        super().__init__(vertices)
         Obstacle.__id += 1
         self.__id = Obstacle.__id
 
@@ -103,7 +144,7 @@ class Obstacle(Point):
         self.kf.P = np.eye(4) * 500.
 
     def predict(self) -> Point:
-        z = np.array([[self.x, self.y]]).T
+        z = np.array([[self.center.x, self.center.y]]).T
         self.kf.predict()
         self.kf.update(z)
 
@@ -144,7 +185,7 @@ class DetectionsDB():
 
     Attributes
     ----------
-    data: list
+    data: list of geometry_msgs/Polygon.msg
     """
     def __init__(self):
         self.__data = []
@@ -153,11 +194,15 @@ class DetectionsDB():
     def data(self):
         return self.__data
 
+    @property
+    def centers(self):
+        return [d.center for d in self.__data]
+
     @data.setter
     def data(self, detections: list):
         self.__data = []
-        for x, y in detections:
-            self.__data.append(Detection(x, y))
+        for polygon in detections:
+            self.__data.append(Detection(polygon.vertices))
 
 
 class ObstaclesDB(DB):

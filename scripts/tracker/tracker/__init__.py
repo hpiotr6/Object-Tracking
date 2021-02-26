@@ -45,28 +45,29 @@ class Tracker():
     def obstacles(self):
         return self.__obstacles
 
-    def create_obstacle(self, x: float, y: float) -> None:
-        o = Obstacle(x, y)
+    def create_obstacle(self, vertices: list) -> None:
+        o = Obstacle(vertices)
         self.obstacles.add(o)
 
     def update_obstacles(self, row_inds: list,
                          col_inds: list) -> None:
         for row, col in zip(row_inds, col_inds):
-            self.obstacles.data[col].coords = self.detections.data[row].coords
+            self.obstacles.data[col].vertices = \
+                self.detections.data[row].vertices
         detections_num = len(self.detections.data)
         full_rows = [ind for ind in range(detections_num)]
         res = set(full_rows) - set(row_inds)
         if len(res):
             for ind in res:
-                x, y = self.detections.data[ind].coords
-                self.create_obstacle(x, y)
+                verts = self.detections.data[ind].vertices
+                self.create_obstacle(verts)
 
     def check(self) -> None:
         if len(self.obstacles.data) == 0:
             for detection in self.detections.data:
-                self.create_obstacle(detection.x, detection.y)
+                self.create_obstacle(detection.vertices)
         else:
             predictions = self.obstacles.predict()
-            hung = HungarianAlgorithm(self.detections.data, predictions)
+            hung = HungarianAlgorithm(self.detections.centers, predictions)
             row_ind, col_ind = hung.get_indices()
             self.update_obstacles(row_ind, col_ind)
