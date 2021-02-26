@@ -202,7 +202,7 @@ class DetectionsDB():
     def data(self, detections: list):
         self.__data = []
         for polygon in detections:
-            self.__data.append(Detection(polygon.vertices))
+            self.__data.append(Detection(polygon.points))
 
 
 class ObstaclesDB(DB):
