@@ -2,20 +2,29 @@
 
 import unittest
 from tracker import Tracker
+from tracker.db import Detection, Point
 
 
-# class Tracker_test(unittest.TestCase):
-#     def setUp(self):
-#         self.tracker = Tracker()
-#         self.tracker.detections = [(2, 3), (7, 1)]
+class Tracker_test(unittest.TestCase):
+    def setUp(self):
+        self.tracker = Tracker()
+        d1 = Detection([Point(x, y)
+                        for x, y in [(0, 0), (0, 6), (4, 0), (4, 6)]])
+        d2 = Detection([Point(x, y)
+                        for x, y in [(1, 3), (1, 9), (9, 3), (9, 9)]])
+        self.tracker.detections = [d1, d2]
 
-#     def test_init(self):
-#         self.tracker.detections = [(1, 2), (3, 4)]
-#         c1 = [point.coords for point in self.tracker.detections.data]
-#         self.assertEqual(c1, [(1, 2), (3, 4)])
-#         self.tracker.detections = [(3, 5), (7, 8)]
-#         c2 = [point.coords for point in self.tracker.detections.data]
-#         self.assertEqual(c2, [(3, 5), (7, 8)])
+    # def test_init(self):
+    #     d1 = Detection([Point(x, y)
+    #                     for x, y in [(0, 0), (0, 6), (4, 0), (4, 6)]])
+    #     d2 = Detection([Point(x, y)
+    #                     for x, y in [(1, 3), (1, 9), (9, 3), (9, 9)]])
+    #     self.tracker.detections = [d2, d1]
+    #     c1 = [point.coords for point in self.tracker.detections.data]
+    #     self.assertEqual(c1, [(1, 2), (3, 4)])
+    #     self.tracker.detections = [(3, 5), (7, 8)]
+    #     c2 = [point.coords for point in self.tracker.detections.data]
+    #     self.assertEqual(c2, [(3, 5), (7, 8)])
 
 #     def test_check_len0(self):
 #         self.assertEqual(self.tracker.obstacles.data[0].coords, (2, 3))
