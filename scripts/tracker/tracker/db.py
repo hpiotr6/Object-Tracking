@@ -88,7 +88,7 @@ class Obstacle(Point):
     def id(self):
         return self.__id
 
-    def setup_kalman(self, R_std, Q_std, dt=1) -> None:
+    def setup_kalman(self, R_std, Q_std, dt=0.1) -> None:
         self.kf.F = np.array([[1, dt, 0,  0],
                               [0,  1, 0,  0],
                               [0,  0, 1, dt],

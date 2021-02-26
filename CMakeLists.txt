@@ -171,6 +171,7 @@ include_directories(
    scripts/rectangleMakerv2.py
    scripts/distance_filter.py
    scripts/track.py
+   scripts/visualization.py
    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 

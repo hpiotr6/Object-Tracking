@@ -9,7 +9,7 @@ from laser_geometry import LaserProjection
 from sensor_msgs import point_cloud2
 from visualization_msgs.msg import Marker, MarkerArray
 from geometry_msgs.msg import Point, Polygon
-from std_msgs.msg import ColorRGBA,Float64MultiArray
+from std_msgs.msg import ColorRGBA,Float64MultiArray, Header
 
 from scan_clustering_kalman.msg import PolygonArray
 
@@ -141,15 +141,16 @@ class rectangleMaker():
 
 
         floatArray = Float64MultiArray()
-        for element in range(len(self.closest_point)):
+        for i in range(len(self.closest_point)):
             p1 = Polygon()
-            p1.points.reserve(5)
+            #p1.points.reserve(5)
             p1.points.append(self.getMiddlePoint(i))
-            p1.points.append(self.highest_point(i))
-            p1.points.append(self.lowest_point(i))
-            p1.points.append(self.closest_point(i))
-            p1.points.append(self.other_point(i))
-            p1.header = header
+            p1.points.append(self.highest_point[i])
+            p1.points.append(self.lowest_point[i])
+            p1.points.append(self.closest_point[i])
+            p1.points.append(self.other_point[i])
+            #header = Header()
+            #p1.header = header
             msg.polygons.append(p1)
         return msg
 
@@ -250,12 +251,13 @@ if __name__== "__main__":
 
     while not rospy.is_shutdown():
         print("\n\n//////////////////// NEXT LOOP ////////////////////\n")
-        rate.sleep()
+       
         list_of_markers = rectangleMaker_node.rectangleMaker()
         middlePointsTuple= rectangleMaker_node.getMiddlePointsTuple()
-        rate.sleep()
         rectanglePoints = rectangleMaker_node.getRectanglePoints()
         pub.publish(list_of_markers)
         pub2.publish(middlePointsTuple)
-    
+        rate.sleep()
+
+        
     print("END")
