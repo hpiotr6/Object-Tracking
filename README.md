@@ -19,8 +19,8 @@ pip install .
 import tracker
 
 # create obstacle from coordinates
-x,y = [3,5]
-tracker.Track().create_obstacle(x,y)
+self.tracker = Tracker()
+self.tracker.detections = [(2, 3), (7, 1)]
 
 ```
 
